@@ -1,5 +1,3 @@
-// ## Part 1 — Variables, Arrow Functions, Destructuring, Spread
-// ### Exercise 4 — Destructuring Objects
 
 const movie = {
   title: "Inception",
@@ -12,18 +10,20 @@ const movie = {
   },
 };
 
-// 1. Destructure title, year, and rating in one line.
 
-// 2. Destructure director.name using nested destructuring.
+const { title, year, rating } = movie;
 
-// 3. Destructure title, and rename it to movieTitle.
 
-// 4. Destructure a field that does not exist: tagline.
-//    Give it a default value of "No tagline available".
+const { director: { name } } = movie;
 
-// 5. Rewrite this function using destructuring in the parameter list:
-function printMovie(movie) {
-  console.log(movie.title, movie.year);
+
+const { title: movieTitle } = movie;
+
+
+const { tagline = "No tagline available" } = movie;
+
+function printMovie({ title, year }) {
+  console.log(title, year);
 }
 
-printMovie(movie); // "Inception" 2010
+printMovie(movie);
