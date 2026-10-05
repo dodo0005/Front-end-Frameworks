@@ -400,9 +400,13 @@ export const SAMPLE_MOVIES = [
   },
 ];
 
-export function getPosterUrl(path: string | null | undefined, width = "w500") {
+export function getPosterUrl(
+  path: string | null | undefined,
+  width = "w500",
+) {
   if (!path) return getPlaceholderPoster();
   if (path.startsWith("http")) return path;
+
   return `https://image.tmdb.org/t/p/${width}${path}`;
 }
 
@@ -412,6 +416,7 @@ export function getBackdropUrl(
 ) {
   if (!path) return getPlaceholderBackdrop();
   if (path.startsWith("http")) return path;
+
   return `https://image.tmdb.org/t/p/${width}${path}`;
 }
 

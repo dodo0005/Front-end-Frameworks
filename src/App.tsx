@@ -1,56 +1,28 @@
-import { useState } from "react";
-import MovieList from "./components/MovieList";
-import SearchBar from "./components/SearchBar";
-import { SAMPLE_MOVIES } from "./data/sampleMovies";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
-  const [movies] = useState(SAMPLE_MOVIES);
-  const [query, setQuery] = useState("");
-  const [minRating, setMinRating] = useState(0);
-
-  const filteredMovies = movies.filter((movie) => {
-    const matchesQuery = movie.title
-      .toLowerCase()
-      .includes(query.toLowerCase());
-
-    const matchesRating = movie.vote_average >= minRating;
-
-    return matchesQuery && matchesRating;
-  });
-
   return (
-    <div className="app-layout">
-      <header>
-        <h1>Movie App</h1>
+    <BrowserRouter>
+      <div className="app-layout">
+        <header>
+          <h1>Movie App</h1>
 
-        <SearchBar
-  query={query}
-  onChange={setQuery}
-/>
+          <nav aria-label="Main navigation">
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+          </nav>
+        </header>
 
-        <label>
-          Minimum rating: {minRating}
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.5"
-            value={minRating}
-            onChange={(event) =>
-              setMinRating(Number(event.target.value))
-            }
-          />
-        </label>
-      </header>
-
-      <main>
-  {filteredMovies.length > 0 ? (
-    <MovieList movies={filteredMovies} />
-  ) : (
-    <p>No movies found.</p>
-  )}
-</main>
-    </div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 };
 

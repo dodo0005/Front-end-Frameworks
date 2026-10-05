@@ -1,3 +1,5 @@
+import type { Genre } from "../types";
+
 export const GENRES: Record<number, string> = {
   28: "Action",
   12: "Adventure",
@@ -20,7 +22,17 @@ export const GENRES: Record<number, string> = {
   37: "Western"
 };
 
-export function getGenreNames(genreIds: number[] = []) {
-  if (!genreIds || !genreIds.length) return ["General"];
-  return genreIds.map(id => GENRES[id] || "Other");
+export function getGenreNames(genreIds: number[] = []): string[] {
+  if (!genreIds.length) {
+    return ["General"];
+  }
+
+  return genreIds.map((id) => GENRES[id] || "Other");
+}
+
+export function getGenres(): Genre[] {
+  return Object.entries(GENRES).map(([id, name]) => ({
+    id: Number(id),
+    name,
+  }));
 }
