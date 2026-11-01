@@ -1,28 +1,35 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+
+import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AppProvider } from "./context/AppContext";
+import HeaderComponent from "./components/HeaderComp";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <BrowserRouter>
-      <div className="app-layout">
-        <header>
-          <h1>Movie App</h1>
+    <AppProvider>
+      <BrowserRouter>
+        <div className="app-layout">
+          <HeaderComponent
+            searchQuery={searchQuery}
+            onChange={setSearchQuery}
+          />
 
-          <nav aria-label="Main navigation">
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage searchQuery={searchQuery} />}
+            />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AppProvider>
   );
 };
 

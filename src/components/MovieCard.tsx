@@ -1,28 +1,31 @@
-import { useState } from "react";
+
 import type { MouseEvent } from "react";
 import type { Movie } from "../types";
 import { getPosterUrl } from "../data/sampleMovies";
 import { getGenreNames } from "../data/genres";
+import { useAppContext } from "../context/AppContext";
 
 interface MovieCardProps {
   movie: Movie;
-  onClick?: () => void;
+  onMovieClick: (movie: Movie) => void;
 }
 
-const MovieCard = ({ movie, onClick }: MovieCardProps) => {
-  const [isFavourite, setIsFavourite] = useState(false);
+const MovieCard = ({ movie, onMovieClick }: MovieCardProps) => {
+const { toggleFavorite, isFavorite } = useAppContext();
 
-  const toggleFavourite = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setIsFavourite((previous) => !previous);
-  };
+const isFavourite = isFavorite(movie.id);
+
+const toggleFavourite = (event: MouseEvent<HTMLButtonElement>) => {
+  event.stopPropagation();
+  toggleFavorite(movie);
+};
 
   return (
     <article
       className="movie-card"
       tabIndex={0}
       aria-label={movie.title}
-      onClick={onClick}
+      onClick={() => onMovieClick(movie)}
     >
       <div className="poster-wrapper">
         <img
@@ -40,6 +43,7 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
                 height="14"
                 viewBox="0 0 24 24"
                 fill="currentColor"
+                aria-hidden="true"
               >
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
@@ -53,14 +57,15 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
               }`}
               title={
                 isFavourite
-                  ? "Remove from Favourites"
-                  : "Add to Favourites"
+                  ? "Remove from Watchlist"
+                  : "Add to Watchlist"
               }
               aria-label={
                 isFavourite
-                  ? "Remove from Favourites"
-                  : "Add to Favourites"
+                  ? "Remove from Watchlist"
+                  : "Add to Watchlist"
               }
+              aria-pressed={isFavourite}
               onClick={toggleFavourite}
             >
               <svg
@@ -70,13 +75,23 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
                 fill={isFavourite ? "currentColor" : "none"}
                 stroke="currentColor"
                 strokeWidth="2"
+                aria-hidden="true"
               >
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </button>
           </div>
 
-          <span className="quick-view-hint">View Details</span>
+          <button
+            type="button"
+            className="quick-view-hint"
+            onClick={(event) => {
+              event.stopPropagation();
+              onMovieClick(movie);
+            }}
+          >
+            View Details
+          </button>
         </div>
       </div>
 
@@ -84,12 +99,16 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
         <h2 className="movie-card-title">{movie.title}</h2>
 
         <div className="movie-card-meta">
-          <span>{movie.release_date.slice(0, 4) || "N/A"}</span>
+          <span>{movie.release_date?.slice(0, 4) || "N/A"}</span>
           <span>{movie.vote_count.toLocaleString()} votes</span>
         </div>
 
         <div className="movie-genres-tags">
-          {getGenreNames(movie.genre_ids)}
+          {getGenreNames(movie.genre_ids).map((genre) => (
+            <span className="genre-tag" key={genre}>
+              {genre}
+            </span>
+          ))}
         </div>
       </div>
     </article>

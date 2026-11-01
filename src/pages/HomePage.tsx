@@ -1,18 +1,24 @@
+
 import { useState } from "react";
+import type { Movie } from "../types";
 import MovieList from "../components/MovieList";
-import SearchBar from "../components/SearchBar";
+import MovieModal from "../components/MovieModal";
 import { useMovies } from "../hooks/useMovies";
 
-const HomePage = () => {
+type HomePageProps = {
+  searchQuery: string;
+};
+
+const HomePage = ({ searchQuery }: HomePageProps) => {
   const { movies, isLoading, error } = useMovies();
 
-  const [query, setQuery] = useState("");
   const [minRating, setMinRating] = useState(0);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const filteredMovies = movies.filter((movie) => {
     const matchesQuery = movie.title
       .toLowerCase()
-      .includes(query.toLowerCase());
+      .includes(searchQuery.toLowerCase());
 
     const matchesRating = movie.vote_average >= minRating;
 
@@ -20,15 +26,9 @@ const HomePage = () => {
   });
 
   return (
-    <main>
-      <SearchBar
-        query={query}
-        onChange={setQuery}
-      />
-
+    <main className="main-container">
       <label>
         Minimum rating: {minRating}
-
         <input
           type="range"
           min="0"
@@ -43,18 +43,26 @@ const HomePage = () => {
 
       {isLoading && <p>Loading movies...</p>}
 
-      {error && (
-        <p role="alert">
-          {error}
-        </p>
-      )}
+      {error && <p role="alert">{error}</p>}
 
       {!isLoading && !error && (
-        filteredMovies.length > 0 ? (
-          <MovieList movies={filteredMovies} />
-        ) : (
-          <p>No movies found.</p>
-        )
+        <>
+          {filteredMovies.length > 0 ? (
+            <MovieList
+              movies={filteredMovies}
+              onMovieClick={setSelectedMovie}
+            />
+          ) : (
+            <p>No movies found.</p>
+          )}
+        </>
+      )}
+
+      {selectedMovie && (
+        <MovieModal
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
       )}
     </main>
   );
