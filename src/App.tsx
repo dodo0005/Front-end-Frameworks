@@ -5,7 +5,7 @@ import { AppProvider } from "./context/AppContext";
 import HeaderComponent from "./components/HeaderComp";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import WatchlistPage from "./pages/WatchListPage";
+import WatchlistPage from "./pages/WatchlistPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
