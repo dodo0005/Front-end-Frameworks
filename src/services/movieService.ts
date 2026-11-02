@@ -32,31 +32,41 @@ export const movieService = {
     page = 1,
     signal,
   }: FetchMoviesParams = {}): Promise<MovieResponse> {
-    // These are accepted now because Session 04 will use them.
     void genre;
     void sort;
     void onlyFavorites;
 
-    // No API key = use local sample data.
+    // Use sample movies when no API key is available.
     if (!API_KEY) {
       const normalizedSearch = search.trim().toLowerCase();
 
-      const results = normalizedSearch
+      const filteredMovies = normalizedSearch
         ? SAMPLE_MOVIES.filter((movie) =>
-            movie.title
-              .toLowerCase()
-              .includes(normalizedSearch),
+            movie.title.toLowerCase().includes(normalizedSearch)
           )
         : SAMPLE_MOVIES;
 
+      const moviesPerPage = 20;
+      const totalResults = filteredMovies.length;
+      const totalPages = Math.max(
+        1,
+        Math.ceil(totalResults / moviesPerPage)
+      );
+
+      const startIndex = (page - 1) * moviesPerPage;
+
       return {
-        results,
-        total_pages: 1,
-        total_results: results.length,
+        results: filteredMovies.slice(
+          startIndex,
+          startIndex + moviesPerPage
+        ),
+        total_pages: totalPages,
+        total_results: totalResults,
         isLiveApi: false,
       };
     }
 
+    // Choose the correct TMDB endpoint.
     const endpoint = search.trim()
       ? "/search/movie"
       : "/movie/popular";
@@ -79,12 +89,12 @@ export const movieService = {
           Authorization: `Bearer ${API_KEY}`,
         },
         signal,
-      },
+      }
     );
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch movies (${response.status})`,
+        `Failed to fetch movies (${response.status})`
       );
     }
 

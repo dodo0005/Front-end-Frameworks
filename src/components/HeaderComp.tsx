@@ -31,9 +31,9 @@ const HeaderComponent = ({ searchQuery, onChange }: HeaderProps) => {
         </div>
 
         <div className="header-actions">
-          <button type="button" className="btn-icon-label">
+            <NavLink to="/watchlist" className="btn-icon-label">
             Watchlist {favorites.length}
-          </button>
+            </NavLink>
 
           <button
             type="button"

@@ -5,6 +5,7 @@ import { AppProvider } from "./context/AppContext";
 import HeaderComponent from "./components/HeaderComp";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
+import WatchlistPage from "./pages/WatchListPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
               element={<HomePage searchQuery={searchQuery} />}
             />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/watchlist" element={<WatchlistPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
